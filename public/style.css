@@ -1,0 +1,42 @@
+h1{
+    text-align: center;
+    color: #FF8A2A;
+    font-weight: 700;
+}
+
+body{
+    font-family: 'Roboto', sans-serif;
+    background-color: #231F20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#Logo{
+    display: block;
+    width: 25%;
+    height: 25%;
+   
+}
+
+button{
+    background: none;
+    color: #FF8A2A;
+    border: 2PX solid;
+    padding: 1em 2em;
+    font-size: 1em;
+    transition: color .25s, border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+
+button:hover{
+    border-color: #ffde85;
+    color: rgb(226, 226, 226);
+    box-shadow: 0 0.5em 0.5em -0.4em #ffde85;
+    transform: translateY(-0.25em);
+    cursor: pointer;
+}
+
+ul{
+    color: #FF8A2A;
+}
