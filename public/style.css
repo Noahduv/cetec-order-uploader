@@ -3,6 +3,10 @@ h1{
     color: #FF8A2A;
     font-weight: 700;
 }
+h2{
+    text-align: center;
+    color: #FF8A2A;
+}
 
 body{
     font-family: 'Roboto', sans-serif;
@@ -26,6 +30,7 @@ button{
     border: 2PX solid;
     padding: 1em 2em;
     font-size: 1em;
+    margin: 1em 2em;
     transition: color .25s, border-color 0.25s, box-shadow 0.25s, transform 0.25s;
 }
 

@@ -4,7 +4,7 @@ const port = 3000;
 const morgan = require('morgan');
 const session = require('express-session');
 const path = require('path');
-const cors = require('cors');
+const cetecRoutes = require('./routes/cetecRoutes');
 //const flash = require('connect-flash');
 //const cookieParser = require('cookie-parser');
 
@@ -17,10 +17,8 @@ app.set('views', path.join(__dirname, '/views'));
 
 app.use(morgan('tiny'));
 app.use(session(sessionOptions));
- 
-app.use(cors({
-    origin: "localhost:3000"
-}));
+
+app.use('/cetec', cetecRoutes);
 
 app.get('/', (req, res) =>{
     res.render('index');

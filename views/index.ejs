@@ -12,16 +12,28 @@
     <img src="/pics/MistyLogo.png" id="Logo">
     <h1>Welcome to the CETEC Order Uploader</h1>
    
-    <form action="">
-        <button id="buttonAPI">Submit API POST</button> 
+    <form action="/cetec/customer">
+        <button id="buttonAPIGET">Submit API Get</button> 
+    </form>
+    <form action="/cetec/placeOrder" method="POST" enctype="multipart/form-data">
+        <div id="fileUpload">
+            <h2>Upload Shopify Orders Here</h2>
+            <input type="file" name="shopifyOrders" id="">
+        </div>
+        
+        <button id="buttonAPIPOST">Submit API POST</button> 
     </form>
    
     <section>
         <h2>Get A Joke</h2>
         <button id="jokeButton">Click Me!</button>
-        <ul id="jokeList"></ul>
+        <div>
+            <ul id="jokeList"></ul>
+        </div>
+        
     </section>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
-    <script src="/main.js"></script>
+    <script src="/javascripts/main.js"></script>
+   
 </body>
 </html>
