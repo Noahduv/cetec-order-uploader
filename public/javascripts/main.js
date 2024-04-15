@@ -143,6 +143,9 @@ const firstOrder = {
 }
 const orderJSON = JSON.stringify(firstOrder);
 
+
+
+
 const jokes = document.querySelector('#jokeList');
 const jokeButton = document.querySelector('#jokeButton');
 const apiButtonGet = document.querySelector('#buttonAPIGET');

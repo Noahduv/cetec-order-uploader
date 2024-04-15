@@ -1,11 +1,13 @@
 //const apiCalls = require('./apiCalls');
+const axios = require('axios');
+
 const config = {headers: { Accept: 'application/json' } };
 const getCustomer = async (email) => {
     try{
         
         const res = await axios.get(`https://mistymountain.cetecerp.com/api/customer?preshared_token=c4tBewPhEYNM1Gm&acct_email=${email}`, config);
       //  const data = await res.json();
-       // console.log(res.data[1].addresses[0].city);
+       console.log(res.data[1].addresses[0].city);
         return res.data;
     }catch(e){
         console.log('Error: ', e);
