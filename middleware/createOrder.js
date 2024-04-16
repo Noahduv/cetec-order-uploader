@@ -1,3 +1,5 @@
+const csvParse = require('./csvParse');
+
 const orderCustomerData = {
     customer_name:"",
     location:"MN",
@@ -56,12 +58,18 @@ const orderData = {
     transcode:"SN",
 };
 
-function createOrder()
-{
+/*Main Function for creating a CETEC Order. Returns a JSON object thats is ready to be sent to CETEC*/
+function createOrder(file)
+{ 
     let combinedData;
+    const data = csvParse.parseCSV(file);
     //stuff here
-    const orderJSON = JSON.stringify(combinedData);
-    return orderJSON;
+   // orderData = JSON.stringify(orderData);
+   // orderData = JSON.parse(orderData);
+    //console.log(orderData[0].Email);
+
+    //const orderJSON = JSON.stringify(combinedData);
+   // return orderJSON;
 }
 
 function fillCustomerData(data){
@@ -73,5 +81,8 @@ function fillCustomerData(data){
 
 function fillOrderData(data){
     const newData = Object.create(orderData);
-    
+
 }
+
+createOrder('./csvStorage/TestOrders.csv');
+//function 
