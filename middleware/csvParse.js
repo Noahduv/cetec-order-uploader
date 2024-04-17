@@ -1,28 +1,42 @@
 const CSVToJSON = require('csvtojson');
-const FileSystem = require('fs');
+const fs = require('fs');
+
 /*CSV columns need white spaces to be removed*/
 /*"CustomerName","Email","CustomerNameShipping","ShippingAddress1","ShippingAddress2","ShippingCity","ShippingProvinceCode","ShippingZIP","ShippingCountry","ShippingAddressPhone","CustomerNameBilling","BillingAddress1","BillingAddress2","BillingCity","BillingProvinceCode","BillingZIP","BillingCountry","OrderName","SKU","ProductPriceLineItemPrice","OrderItemQuantity","TotalTax","TotalDiscounts","TransactionDateCreated","ShippingPrice"*/
+
 function printCSV(file){
 CSVToJSON().fromFile(file).then(source => {
     console.log(source);
 });
 };
 
-function parseCSV(file){
-    var data;
-    CSVToJSON().fromFile(file).then(source => {
-       // console.log(source[1].CustomerName);
-       // source = JSON.parse(source);
-       data = source;
-      // return source;
-    });
+async function processCSV(file){
+    //promise chain here
+    let fp = "output.json";
+    try{
+        await parseCSV(file, fp);
+        let data =  await readJSON(fp);
+        return data;
+    }catch(e) {
+        console.log("error: ", e);
+    }
+}
 
-    console.log(data);
-    return data;
-};
+async function parseCSV(file, fp){
+//make promise  
+  const converter = await CSVToJSON({trim:true}).fromFile(file).then(source => {
+            fs.writeFileSync(fp, JSON.stringify(source), "utf-8"); 
+          });
+          return 'File Saved successfully';
+}
+   
+async function readJSON(fp){
+        const data = fs.readFileSync(fp, 'utf8');
+        return JSON.parse(data);
+}
 
 const csvParse = {
     printCSV: printCSV,
-    parseCSV: parseCSV
+    processCSV: processCSV
 }
 module.exports = csvParse;

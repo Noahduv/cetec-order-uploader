@@ -59,10 +59,13 @@ const orderData = {
 };
 
 /*Main Function for creating a CETEC Order. Returns a JSON object thats is ready to be sent to CETEC*/
-function createOrder(file)
+async function createOrder(file)
 { 
     let combinedData;
-    const data = csvParse.parseCSV(file);
+    const data = await csvParse.processCSV(file);
+    console.log('Data Completed');
+    console.log(data);
+    
     //stuff here
    // orderData = JSON.stringify(orderData);
    // orderData = JSON.parse(orderData);
