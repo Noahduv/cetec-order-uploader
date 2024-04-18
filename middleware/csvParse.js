@@ -16,6 +16,7 @@ async function processCSV(file){
     try{
         await parseCSV(file, fp);
         let data =  await readJSON(fp);
+        console.log('Data Completed');
         return data;
     }catch(e) {
         console.log("error: ", e);
