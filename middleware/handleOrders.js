@@ -87,6 +87,30 @@ const newCustomerData ={
     external_key: ""
 };
 
+const newAddressData = {
+    preshared_token: "",
+     addresses: [
+        {
+            taxtype:"",
+            name: "",
+            street1: "",
+            city: "",
+            state: "",
+            zip: "",
+            address_type: "billto"
+        },
+        {
+            taxtype:"",
+            name: "",
+            street1: "",
+            city: "",
+            state: "",
+            zip: "",
+            address_type: "shipto"
+        }
+     ]
+};
+
 /*Main Function for creating a CETEC Order. Returns a JSON object thats is ready to be sent to CETEC*/
 async function createOrder(file)
 { 
@@ -186,11 +210,18 @@ async function createCustomer(orderData){
     newData.acctphone = orderData["Shipping Address Phone"];
     //make xternal key checker and generator
     //newData.external_key = 
+
+    //add addresses to customer
+
 }
 
-async function addCustomerAddress(orderData){
+async function addCustomerAddress(orderData, ID){
     //add code for customer address
+    const newData = Object.create(addAddressData);
+
+    
 }
+
 const handleOrders = {
     createOrder: createOrder
 }

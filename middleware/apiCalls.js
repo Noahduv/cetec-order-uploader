@@ -63,9 +63,10 @@ const createCustomer = async (data) => {
    
 };
 
-const addCustomerAddress = async(data) =>{
+const addCustomerAddress = async(data, ID) =>{
     try{
-        //patch request
+        const res = await axios.patch(`https://mistymountain.cetecerp.com/api/customer/${ID}`, data, config);
+        return res.status;
     }catch(e){
         console.log('Error: ', e);
     }
