@@ -25,6 +25,14 @@ const getCustomerById = async(ID) => {
     }
 };
 
+const getCustomerByKey = async(key) => {
+    try{
+        const res = await axios.get(`https://mistymountain.cetecerp.com/api/customer?preshared_token=c4tBewPhEYNM1Gm&external_key=${key}`, config);
+        return res.data;
+    }catch(e){
+        console.log('Error: ', e);
+    }
+};
 /*GET CONTACT API CALLS */
 const getContact = async (email) =>{
     try{
@@ -56,7 +64,7 @@ const getDadJoke = async () => {
 const createCustomer = async (data) => {
     try{
         const res = await axios.put(`https://mistymountain.cetecerp.com/api/customer`, data, config);
-        return res.status;
+        return res;
     }catch(e){
         console.log('Error: ', e);
     }
@@ -79,6 +87,7 @@ const apiCalls = {
     getCustomerById: getCustomerById,
     createCustomer: createCustomer,
     addCustomerAddress: addCustomerAddress,
+    getCustomerByKey: getCustomerByKey,
     getDadJoke: getDadJoke,
     config: config
 }
