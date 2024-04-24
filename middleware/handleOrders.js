@@ -1,6 +1,7 @@
 const csvParse = require('./csvParse');
 const apiCalls = require('./apiCalls');
 const configData = require('../config/default.json');
+const fs = require('fs');
 
 /*ObjectTemplate for creating new order. Contains important fields required for importing orders to cetec*/
 const orderCustomerData = {
@@ -44,6 +45,7 @@ const orderCustomerData = {
     quote_name: "Online Order",
     payment_type_id :"3",
     prepayment_amount:"FULL",
+    lines:[]
    // "prepayment_ref":"",
 };
 
@@ -102,59 +104,58 @@ const newCustomerData ={
     ship_to_address_zip: ""
 };
 
-/*const newAddressData = {
-    preshared_token: "",
-     addresses: [
-        {
-            taxtype:"",
-            name: "",
-            street1: "",
-            city: "",
-            state: "",
-            zip: "",
-            country: "",
-            address_type: "billto"
-        },
-        {
-            taxtype:"",
-            name: "",
-            street1: "",
-            city: "",
-            state: "",
-            zip: "",
-            country: "",
-            address_type: "shipto"
-        }
-     ]
-};*/
-
 /*Main Function for creating a CETEC Order. Returns a JSON object thats is ready to be sent to CETEC*/
 async function createOrder(file)
 { 
     const fileP = file;
-    let combinedData;
+    let combinedData = [];
+    let newOrder = {};
+    let newLine = {};
+    let lastOrder;
+
+    //contains json object with all order data
     const orderData = await csvParse.processCSV(fileP);
-   const extKey =  await getCustomerKey(orderData[0]);
-   console.log(extKey);
-   /* for(let i = 0; i < orderData.length; i++){
 
-        const newOrder = await fillCustomerData(orderData[i]);
-        const newLine = await fillLineData(orderData[i]);
-    } */
-   
-  //  fillCustomerData(orderData);
-   // console.log(data);
-   // return data;
-    //stuff here
-   // orderData = JSON.stringify(orderData);
-   // orderData = JSON.parse(orderData);
-    //console.log(orderData[0].Email);
+    for(let i = 0; i < orderData.length; i++){
+        if(lastOrder === orderData[i]["Order Name"]){
+            //Order with multiple line items
+            newLine = await fillLineData(orderData[i]);
+            await pushToArray(newOrder.lines, newLine);
 
-    //const orderJSON = JSON.stringify(combinedData);
-   // return orderJSON;
+        }
+        else{
+            //loop has moved on to next order. Save newOrder Object to array combinedData
+            if(lastOrder) {
+                await pushToArray(combinedData, newOrder);
+                newOrder = await clearObject(newOrder);
+                //await sealCustomer(combinedData, lastOrder);
+            }
+
+            //start processing data for next order
+            const extKey =  await getCustomerKey(orderData[i]);
+            newOrder = await fillCustomerData(orderData[i], extKey);
+            newLine = await fillLineData(orderData[i]);
+            await pushToArray(newOrder.lines, newLine);
+        }
+        //save email for the current line. Will be used later to check if an order has multiple lines
+        lastOrder = orderData[i]["Order Name"];
+    } 
+    //push last order to array
+    await pushToArray(combinedData, newOrder);
+    if(combinedData.length > 0) {
+        console.log("array has been filled", combinedData.length);
+        for(let i = 0; i < combinedData.length; i++){
+            console.log(combinedData[i]);
+            console.log(combinedData[i].lines);
+        }   
+    }
+    else{
+        console.log("Array of orders failed to fill");
+    }
+
 }
 
-async function fillCustomerData(orderData){
+async function fillCustomerData(orderData, extKey){
 
     const newData = Object.create(orderCustomerData);
 
@@ -176,7 +177,7 @@ async function fillCustomerData(orderData){
     newData.po = orderData["Order Name"];
     newData.tax_collected = orderData["Total Tax"];
     newData.freight_resale = orderData["Shipping Price"];
-
+    newData.external_key = extKey;
     return newData;
 }
 
@@ -188,6 +189,8 @@ async function fillLineData(orderData){
     newData.partnum = orderData["SKU"];
     newData.qty = orderData["Order Item Quantity"];
     newData.external_key = orderData["Order Name"];
+
+    return newData;
 
 }
 
@@ -267,36 +270,9 @@ async function createCustomer(orderData){
 
 }
 
-/*async function addCustomerAddress(orderData, ID){
-    const newData = Object.create(newAddressData);
-
-    newData.preshared_token = "c4tBewPhEYNM1Gm";
-    
-    //billing data
-    newData.addresses[0].name = orderData["Customer Name (Billing)"];
-    newData.addresses[0].street1 = orderData["Billing Address 1"];
-    newData.addresses[0].street2 = orderData["Billing Address 2"];
-    newData.addresses[0].city = orderData["Billing City"];
-    newData.addresses[0].state = orderData["Billing Province Code"];
-    newData.addresses[0].zip = orderData["Billing ZIP"];
-   // newData.addresses[0].country = orderData["Billing Country"];
-
-    //shipping data
-    newData.addresses[1].name = orderData["Customer Name (Shipping)"];
-    newData.addresses[1].street1 = orderData["Shipping Address 1"];
-    newData.addresses[1].street2 = orderData["Shipping Address 2"];
-    newData.addresses[1].city = orderData["Shipping City"];
-    newData.addresses[1].state = orderData["Shipping Province Code"];
-    newData.addresses[1].zip = orderData["Shipping ZIP"];
-    //newData.addresses[1].country = orderData["Shipping Country"];
-    
-    const res = await apiCalls.addCustomerAddress(newData, ID);
-    console.log(res);
-    return res;
-}*/
-
+/**Generates a new External key for a customer and saves to default.json. Returns External Key value as INT*/
 async function generateExternalKey(){
-    
+    const limiterSize = 30;
     let limiter = 0;
     let newKey = configData.last_external_key + 1;
     let custData = await apiCalls.getCustomerByKey(newKey);
@@ -304,7 +280,7 @@ async function generateExternalKey(){
     if(custData.length !== 0)
     {
         //initial api call found a customer with a corresponding key. Add one to the key and try again
-        while(custData.length !== 0 && limiter < 10) 
+        while(custData.length !== 0 && limiter < limiterSize) 
         {
             newKey++;
             custData = await apiCalls.getCustomerByKey(newKey);
@@ -312,10 +288,13 @@ async function generateExternalKey(){
          }
     }
     
-    if(limiter < 10)
+    if(limiter < limiterSize)
     {
         console.log("Available key found: ", newKey);
         configData.last_external_key = newKey;
+       const res = await saveExtKey(newKey);
+        if(res == 200) {console.log("New external Key saved.");}
+        
         //remove "T" + after development!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DOn't FOrget
         return "T"+ newKey;
     }
@@ -325,6 +304,47 @@ async function generateExternalKey(){
     }
 }
 
+//saves new External Key to default.json file
+async function saveExtKey(newKey){
+
+    const fp = './config/default.json';
+    const newObject = { "last_external_key": ""};
+    newObject.last_external_key = newKey;
+    let newObjStr = JSON.stringify(newObject);
+    
+        try{
+            fs.writeFileSync(fp, newObjStr, "utf-8");
+            return 200;
+        }catch(e){
+            console.log('New External Key Failed to Save... : ', e);
+            return 0;
+        }
+}
+
+async function pushToArray(arr, obj){
+    try{
+        arr.push(obj);
+    }catch(e){
+        console.log("Failed to push order lines to array... Error: ", e);
+    }
+}
+async function clearObject(obj){
+ /*   for(let a = 0; a < obj.lines.length; a++){
+        obj.lines.pop();
+    }*/
+    obj = {};
+    return obj;
+}
+
+async function sealCustomer(Arr, searchValue){
+    for(let i = 0; i < Arr.length; i++){
+        if(Arr[i].po === searchValue){
+            const target = Arr[i];
+            Object.seal(target);
+        }
+    }
+   
+}
 const handleOrders = {
     createOrder: createOrder
 }
