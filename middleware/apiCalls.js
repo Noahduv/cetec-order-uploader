@@ -79,6 +79,15 @@ const addCustomerAddress = async(data, ID) =>{
         console.log('Error: ', e);
     }
 }
+
+const sendOrder = async(data) => {
+    try{
+        const res = await axios.post(`https://mistymountain.cetecerp.com/importjson/quotes?preshared_token=c4tBewPhEYNM1Gm&import_source_name=WEBSERVICE&json=`, data, config);
+        return res.status;
+    }catch(e){
+        console.log("Error: Failed to send post request.... ", e);
+    }
+}
 //export {getCustomer, getDadJoke, config};
 
 const apiCalls = {
@@ -88,6 +97,7 @@ const apiCalls = {
     createCustomer: createCustomer,
     addCustomerAddress: addCustomerAddress,
     getCustomerByKey: getCustomerByKey,
+    sendOrder: sendOrder,
     getDadJoke: getDadJoke,
     config: config
 }
