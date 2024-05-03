@@ -9,11 +9,15 @@ const port = 3000;
 const morgan = require('morgan');
 const session = require('express-session');
 const path = require('path');
+const ejsMate = require('ejs-mate');
 const cetecRoutes = require('./routes/cetecRoutes');
 //const flash = require('connect-flash');
 //const cookieParser = require('cookie-parser');
 
 //app.use(cookieParser('secret'));
+
+app.engine('ejs', ejsMate)
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 const sessionOptions = { secret: 'secretKey', resave: false, saveUninitialized: false};
@@ -29,12 +33,9 @@ app.get('/', (req, res) =>{
     res.render('index');
 })
 
-
-
- /**This Route must go Last 
 app.use((req, res) =>{
-    res.status(404).send('Invalid Request. Page Not Found...');
-}) */
+    res.status(404).render('notfound');
+})
 
 app.listen(process.env.PORT || port, () =>{
     console.log("Listening on port 3000")

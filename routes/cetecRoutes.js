@@ -15,7 +15,7 @@ router.post('/placeOrder', upload.single('shopifyOrders'), (req, res) => {
     //file saved to /uploads
     try{ /*Send File to parsed and uploaded */
         const data = handleOrders.createOrder(req.file);
-        res.redirect('/');
+        res.send(data);
         
     }catch(e){
         /* Any Errors */

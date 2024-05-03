@@ -83,7 +83,7 @@ const addCustomerAddress = async(data, ID) =>{
 const sendOrder = async(data) => {
     try{
         const res = await axios.post(`https://mistymountain.cetecerp.com/importjson/quotes?preshared_token=c4tBewPhEYNM1Gm&import_source_name=WEBSERVICE&json=`, data, config);
-        return res.status;
+        return res;
     }catch(e){
         console.log("Error: Failed to send post request.... ", e);
     }

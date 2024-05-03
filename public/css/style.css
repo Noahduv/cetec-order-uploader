@@ -11,17 +11,12 @@ h2{
 body{
     font-family: 'Roboto', sans-serif;
     background-color: #231F20;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
 }
 
-#Logo{
-    display: block;
-    width: 25%;
-    height: 25%;
-   
+p{
+    color: #FF8A2A;
+    padding: .25em 1%;
 }
 
 button{
@@ -44,4 +39,12 @@ button:hover{
 
 ul{
     color: #FF8A2A;
+}
+#uploadCard{
+    background-color: #474747;
+}
+#titleCard{
+    background-color: #474747;
+    width: 22rem; 
+    height: 18rem;
 }
