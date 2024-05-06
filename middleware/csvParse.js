@@ -12,10 +12,10 @@ CSVToJSON().fromFile(file).then(source => {
 
 async function processCSV(file){
     //promise chain here
-    let fp = "output.json";
+    const fp = "output.json";
     try{
         await parseCSV(file, fp);
-        let data =  await readJSON(fp);
+        const data =  await readJSON(fp);
         console.log('Data Completed');
         return data;
     }catch(e) {

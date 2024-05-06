@@ -1,5 +1,5 @@
 //const apiCalls = require('./modules/apiCalls.js');
-
+const orderArr = [];
 const getDadJoke = async () => {
    try{
        const config = { headers: { Accept: 'application/json' }}

@@ -7,7 +7,8 @@ const helperFunctions = require('./helperFunctions');
 /*Main Function for creating a CETEC Order. Returns a JSON object thats is ready to be sent to CETEC*/
 async function createOrder(file)
 { 
-    const fileP = file;
+    const fileP = file.path;
+    console.log(file);
     let combinedData = [];
     let newOrder = {};
     let newLine = {};
@@ -17,11 +18,11 @@ async function createOrder(file)
     //contains json object with all order data
     const orderData = await csvParse.processCSV(fileP);
 
+if(orderData){
     for(let i = 0; i < orderData.length; i++){
         if(lastOrder === orderData[i]["Order Name"]){
             //Order with multiple line items
             newLine = await helperFunctions.fillLineData(orderData[i]);
-            //newLine.external_key = parseInt(newLine.external_key) + 1;
             await helperFunctions.pushToArray(newOrder.lines, newLine);
 
         }
@@ -47,22 +48,23 @@ async function createOrder(file)
         console.log("array has been filled", combinedData.length);
         for(let i = 0; i < combinedData.length; i++){
            await helperFunctions.incramentKey(combinedData[i].lines);
-            //console.log(combinedData[i]);
-            res = await helperFunctions.sendOrders(combinedData[i]);
-          //  console.log(res);
-            orderList.push(helperFunctions.evaluateResponse(res));
+            let res = await helperFunctions.sendOrders(combinedData[i]);
+            orderList.push(await helperFunctions.evaluateResponse(res));
         }   
     }
     else{
         console.log("Array of orders failed to fill");
     }
-    
+}
     //If list is empty push -1. Something has gone wrong.
     if(orderList.length < 1){
-        orderList.push(-1);
+        return -1;
     }
     
-    return orderList;
+    const finalOrderList = await helperFunctions.arraytoString(orderList);
+
+    return finalOrderList;
+    
 }
 
 const handleOrders = {

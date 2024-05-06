@@ -10,26 +10,33 @@ const morgan = require('morgan');
 const session = require('express-session');
 const path = require('path');
 const ejsMate = require('ejs-mate');
+const flash = require('connect-flash');
 const cetecRoutes = require('./routes/cetecRoutes');
-//const flash = require('connect-flash');
 //const cookieParser = require('cookie-parser');
 
 //app.use(cookieParser('secret'));
 
 app.engine('ejs', ejsMate)
-
 app.use(express.static(path.join(__dirname, 'public')));
 
-const sessionOptions = { secret: 'secretKey', resave: false, saveUninitialized: false};
+const sessionOptions = { secret: 'secretKey', resave: false, saveUninitialized: false, cookie: {httpOnly: true, expires: Date.now() + 1000 * 60 * 60 * 24 * 7, maxAge: 1000 * 60 * 60 *24 * 7}};
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
 
 app.use(morgan('tiny'));
 app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req, res, next) =>{
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
 
 app.use('/cetec', cetecRoutes);
 
 app.get('/', (req, res) =>{
+    req.flash('success', 'Successfully opened page');
     res.render('index');
 })
 

@@ -11,18 +11,23 @@ router.get('/customer', (req, res) => {
     res.send("Getting Cetec Customer");
 })
 
-router.post('/placeOrder', upload.single('shopifyOrders'), (req, res) => {
+router.post('/placeOrder', upload.single('shopifyOrders'), async (req, res) => {
     //file saved to /uploads
     try{ /*Send File to parsed and uploaded */
-        const data = handleOrders.createOrder(req.file);
-        res.send(data);
+        const data = await handleOrders.createOrder(req.file);
+        if(data == -1){
+            req.flash('error', 'An error occured when uploading');
+        }
+        else{
+            req.flash('success', `Successfully placed orders: ${data}`);
+        }
         
     }catch(e){
         /* Any Errors */
-        console.log(' Upload Unsuccessful:', e);
+        req.flash('error', 'An error occured when uploading');
     }
+    res.redirect('/');
     
-    res.send(req.file);
 })
 
 module.exports = router;

@@ -45,6 +45,7 @@ const orderCustomerData = {
     "quote_name": "",
     "payment_type_id" :"6",
     "prepayment_amount":"FULL",
+    "oorderdate": "",
     "lines":[]
    // "prepayment_ref":"",
 };
@@ -146,7 +147,7 @@ async function fillCustomerData(orderData, extKey){
     } else{
         newData.customer_taxtype = "0";
     }
-   
+    newData.oorderdate = orderData["Transaction Date (Created)"];
     newData.internal_customer_id = "1";
     newData.internal_vendor_id = "1";
     newData.place_order = "true";
@@ -166,7 +167,7 @@ async function fillLineData(orderData){
     newData.external_key = orderData["Order Name"];
     newData.use_current_rev = "1";
     newData.transcode = "SN";
-    newData.resale = orderData["Product Price (Line Item Price)"];
+    newData.resale = (orderData["Product Price (Line Item Price)"] - orderData["Total Discounts"]);
     newData.cost = "";
     newData.custpart = "";
     newData.description = "";
@@ -358,6 +359,13 @@ async function sendOrders(order){
     return res.data;
 }
 
+async function arraytoString(ordersArr){
+    let ordString ="";
+    ordersArr.forEach(async(order) =>{
+        ordString += (order + ", ");
+    });
+    return ordString;
+}
 const helperFunctions = {
     orderCustomerData: orderCustomerData,
     lineOrderData: lineOrderData,
@@ -373,6 +381,7 @@ const helperFunctions = {
     incramentKey: incramentKey,
     processDate: processDate,
     evaluateResponse: evaluateResponse,
-    sendOrders: sendOrders
+    sendOrders: sendOrders,
+    arraytoString: arraytoString
 }
 module.exports = helperFunctions;
