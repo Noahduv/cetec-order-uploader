@@ -2,9 +2,9 @@
 <% layout('layout/boilerplate')%>
    <div class="row">
     <div class="card" id="titleCard">
-        <img src="/pics/MistyLogo.png" class="card-img-top" id="Logo">
+        <img src="/pics/MistyLogo.png" class="card-img-top">
         <div class="card-body">
-            <p class="text-center" style="font-size : 1.5rem">Welcome to the CETEC Order Uploader<p>
+            <p class="text-center" style="font-size : 1.5rem;">Welcome to the CETEC Order Uploader<p>
         </div>
       </div>
   
@@ -15,18 +15,21 @@
 
             <div class="mb-3 px-3" id="fileUpload">
                 <label for="formFile" class="form-label"></label>
-                <p>.csv file required</p>
+                <p id="csv">.csv file required</p>
                 <input class="form-control" type="file" name="shopifyOrders" id="shopifyOrders" required>
                 <div class="valid-feedback">
                     Looks Good!
                 </div>
               </div>
             
-            <button id="buttonAPIPOST">Submit API POST</button> 
+            <button id="buttonAPIPOST">
+                <span>Submit Orders</span>
+                <span class="spinner-border spinner-border-sm" aria-hidden="true" id="loadingIcon"></span>
+            </button> 
         </form>
     </div>
         <div class="mb-3">
-            <h2>Get A Joke</h2>
+            <h3>Get A Joke</h3>
             <button id="jokeButton">Click Me!</button>
             <div>
                 <ul id="jokeList"></ul>

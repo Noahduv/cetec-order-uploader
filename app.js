@@ -30,14 +30,19 @@ app.use(flash());
 app.use((req, res, next) =>{
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
+
     next();
 })
 
 app.use('/cetec', cetecRoutes);
 
 app.get('/', (req, res) =>{
-    req.flash('success', 'Successfully opened page');
+    req.flash('success', 'Welcome home!');
     res.render('index');
+})
+
+app.get('/settings', (req, res) =>{
+    res.render('settingsPage');
 })
 
 app.use((req, res) =>{

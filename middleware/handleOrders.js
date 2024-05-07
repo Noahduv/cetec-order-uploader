@@ -14,7 +14,7 @@ async function createOrder(file)
     let newLine = {};
     let lastOrder;
     const orderList =[];
-
+    
     //contains json object with all order data
     const orderData = await csvParse.processCSV(fileP);
 

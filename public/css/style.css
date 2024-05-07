@@ -1,27 +1,34 @@
 h1{
     text-align: center;
-    color: #FF8A2A;
+    color: #f2e9e4;
     font-weight: 700;
 }
 h2{
     text-align: center;
-    color: #FF8A2A;
+    color: #f2e9e4;
+}
+h3{
+    text-align: center;
+    color: #4a4e69;
 }
 
 body{
     font-family: 'Roboto', sans-serif;
-    background-color: #231F20;
+    background-color: #f2e9e4;
     justify-content: center;
 }
 
 p{
-    color: #FF8A2A;
+    color: #f2e9e4;
     padding: .25em 1%;
+}
+#csv{
+    color: #c9ada7;
 }
 
 button{
     background: none;
-    color: #FF8A2A;
+    color: #22223b;
     border: 2PX solid;
     padding: 1em 2em;
     font-size: 1em;
@@ -30,21 +37,35 @@ button{
 }
 
 button:hover{
-    border-color: #ffde85;
+    border-color: #f2e9e4;
     color: rgb(226, 226, 226);
-    box-shadow: 0 0.5em 0.5em -0.4em #ffde85;
+    box-shadow: 0 0.5em 0.5em -0.4em #f2e9e4;
     transform: translateY(-0.25em);
     cursor: pointer;
 }
 
 ul{
-    color: #FF8A2A;
+    color: #4a4e69;
 }
 #uploadCard{
-    background-color: #474747;
+    background-color: #4a4e69;
+    margin: 1em 2em;
+    padding: 1em 2em;
 }
 #titleCard{
-    background-color: #474747;
-    width: 22rem; 
-    height: 18rem;
+    background-color: #4a4e69;
+    width: 20em;
+    height: 18em;
+    
+}
+#titleCard img {
+    align-items:center;
+}
+
+#loadingIcon{
+    visibility: hidden;
+}
+
+#settings{
+    align-items: center;
 }
