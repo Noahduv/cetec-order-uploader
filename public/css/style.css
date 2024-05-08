@@ -54,12 +54,13 @@ ul{
 }
 #titleCard{
     background-color: #4a4e69;
-    width: 20em;
-    height: 18em;
+    
     
 }
 #titleCard img {
-    align-items:center;
+    justify-content:center;
+    max-width: 60%;
+    height:auto;
 }
 
 #loadingIcon{
