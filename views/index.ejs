@@ -1,10 +1,10 @@
 
 <% layout('layout/boilerplate')%>
 
-    <div class="row">
+    <div class="row align-items-center">
         <div class="col-sm-4"> 
             <div class="card" id="titleCard">
-            <img src="/pics/MistyLogo.png" class="card-img-top">
+            <img src="/pics/MistyLogo.png" class="card-img-top align-self-center">
             <div class="card-body">
                 <p class="text-center" style="font-size : 1.5rem;">Welcome to the CETEC Order Uploader<p>
             </div>
@@ -16,23 +16,30 @@
             <div class="card" id="uploadCard">
             <h2>Upload Shopify Orders Here</h2> 
             <form action="/cetec/placeOrder" method="POST" enctype="multipart/form-data" novalidate class="validated-form">
-    
                 <div class="mb-3 px-3" id="fileUpload">
-                    <label for="formFile" class="form-label"></label>
-                    <p id="csv">.csv file required</p>
+                    <div class="form-group">
+                    <label for="formFile" class="form-label" id="csv">.csv file required</label>
                     <input class="form-control" type="file" name="shopifyOrders" id="shopifyOrders" required>
                     <div class="valid-feedback">
                         Looks Good!
                     </div>
+                    </div>
+                    
                   </div>
                 
                 <button id="buttonAPIPOST">
-                    <span>Submit Orders</span>
+                    <label>Submit Orders</label>
                     <span class="spinner-border spinner-border-sm" aria-hidden="true" id="loadingIcon"></span>
                 </button> 
             </form>
         </div>
-        <div class="col">
+        
+        
+           
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-8 offset-4">
             <div class="mb-3">
                 <h3>Get A Joke</h3>
                 <button id="jokeButton">Click Me!</button>
@@ -41,9 +48,7 @@
                 </div>
             </div>
         </div>
-           
-        </div>
-       </div>
+    </div>
  
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
     <script src="/javascripts/main.js"></script>

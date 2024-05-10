@@ -1,6 +1,6 @@
 const CSVToJSON = require('csvtojson');
 const fs = require('fs');
-const multer = require('multer');
+const expressError = require('../utils/expressError');
 
 /*CSV columns need white spaces to be removed*/
 /*"CustomerName","Email","CustomerNameShipping","ShippingAddress1","ShippingAddress2","ShippingCity","ShippingProvinceCode","ShippingZIP","ShippingCountry","ShippingAddressPhone","CustomerNameBilling","BillingAddress1","BillingAddress2","BillingCity","BillingProvinceCode","BillingZIP","BillingCountry","OrderName","SKU","ProductPriceLineItemPrice","OrderItemQuantity","TotalTax","TotalDiscounts","TransactionDateCreated","ShippingPrice"*/
@@ -12,7 +12,6 @@ CSVToJSON().fromFile(file).then(source => {
 };
 
 async function processCSV(file){
-    //promise chain here
     const fp = "output.json";
     try{
         await parseCSV(file, fp);
@@ -20,7 +19,7 @@ async function processCSV(file){
         console.log('Data Completed');
         return data;
     }catch(e) {
-        console.log("error: ", e);
+        throw new expressError("Failed to read CSV file", 400);
     }
 }
 

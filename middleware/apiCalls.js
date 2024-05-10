@@ -1,5 +1,6 @@
 //const apiCalls = require('./apiCalls');
 const axios = require('axios');
+const expressError = require('../utils/expressError');
 
 const config = {headers: { Accept: 'application/json' } };
 
@@ -85,7 +86,7 @@ const sendOrder = async(data) => {
         const res = await axios.post(`https://mistymountain.cetecerp.com/importjson/quotes?preshared_token=c4tBewPhEYNM1Gm&import_source_name=WEBSERVICE&json=`, data, config);
         return res;
     }catch(e){
-        console.log("Error: Failed to send post request.... ", e);
+        throw new expressError('Failed to submit order to CETEC', e.status);
     }
 }
 //export {getCustomer, getDadJoke, config};

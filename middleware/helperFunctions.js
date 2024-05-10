@@ -1,6 +1,7 @@
 const csvParse = require('./csvParse');
 const apiCalls = require('./apiCalls');
 const configData = require('../config/default.json');
+const expressError = require('../utils/expressError');
 const fs = require('fs');
 
 /*ObjectTemplate for creating new order. Contains important fields required for importing orders to cetec*/
@@ -158,7 +159,7 @@ async function fillCustomerData(orderData, extKey){
 }
 
 /*Creates new object based off the Order Line template and fills the data required for a order line item*/
-async function fillLineData(orderData){
+async function fillLineData(orderData, firstLine){
 
     const newData = Object.create(lineOrderData);
 
@@ -167,7 +168,7 @@ async function fillLineData(orderData){
     newData.external_key = orderData["Order Name"];
     newData.use_current_rev = "1";
     newData.transcode = "SN";
-    newData.resale = (orderData["Product Price (Line Item Price)"] - orderData["Total Discounts"]);
+    firstLine == true ? newData.resale = (orderData["Product Price (Line Item Price)"] - orderData["Total Discounts"]) : newData.resale = orderData["Product Price (Line Item Price)"];
     newData.cost = "";
     newData.custpart = "";
     newData.description = "";
@@ -211,7 +212,7 @@ async function getCustomerKey(orderData){
     
             }
             else{
-                console.log("Customer Failed to be created");
+                console.log(`Failed to find or create customer for ${orderData["Customer Name"]}`);
             }
             
         }
@@ -251,7 +252,7 @@ async function createCustomer(orderData){
     newData.ship_to_address_zip = orderData["Shipping ZIP"];
     newData.ship_to_country_id = 233;
 
-    const res = apiCalls.createCustomer(newData);
+    const res = await apiCalls.createCustomer(newData);
     return res;
 
 }
@@ -279,9 +280,7 @@ async function generateExternalKey(){
         console.log("Available key found: ", newKey);
         configData.last_external_key = newKey;
        const res = await saveExtKey(newKey);
-        if(res == 200) {console.log("New external Key saved.");}
-        
-        //remove "T" + after development!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DOn't FOrget
+        if(res == 200) console.log("New external Key saved.");
         return newKey;
     }
     else{
@@ -311,7 +310,7 @@ async function pushToArray(arr, obj){
     try{
         arr.push(obj);
     }catch(e){
-        console.log("Failed to push order lines to array... Error: ", e);
+        throw new expressError("Failed to push order lines to array...", 500);
     }
 }
 

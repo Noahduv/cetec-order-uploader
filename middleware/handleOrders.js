@@ -14,6 +14,7 @@ async function createOrder(file)
     let newLine = {};
     let lastOrder;
     const orderList =[];
+    const failedOrders =[];
     
     //contains json object with all order data
     const orderData = await csvParse.processCSV(fileP);
@@ -22,7 +23,7 @@ if(orderData){
     for(let i = 0; i < orderData.length; i++){
         if(lastOrder === orderData[i]["Order Name"]){
             //Order with multiple line items
-            newLine = await helperFunctions.fillLineData(orderData[i]);
+            newLine = await helperFunctions.fillLineData(orderData[i], false);
             await helperFunctions.pushToArray(newOrder.lines, newLine);
 
         }
@@ -35,7 +36,7 @@ if(orderData){
             //start processing data for next order
             const extKey =  await helperFunctions.getCustomerKey(orderData[i]);
             newOrder = await helperFunctions.fillCustomerData(orderData[i], extKey);
-            newLine = await helperFunctions.fillLineData(orderData[i]);
+            newLine = await helperFunctions.fillLineData(orderData[i], true);
             await helperFunctions.pushToArray(newOrder.lines, newLine);
         }
         //save email for the current line. Will be used later to check if an order has multiple lines
@@ -50,6 +51,7 @@ if(orderData){
            await helperFunctions.incramentKey(combinedData[i].lines);
             let res = await helperFunctions.sendOrders(combinedData[i]);
             orderList.push(await helperFunctions.evaluateResponse(res));
+            if(orderList[i] == -1) orderList[i] = (combinedData[i].po);
         }   
     }
     else{
@@ -61,9 +63,9 @@ if(orderData){
         return -1;
     }
     
-    const finalOrderList = await helperFunctions.arraytoString(orderList);
+   // const finalOrderList = await helperFunctions.arraytoString(orderList);
 
-    return finalOrderList;
+    return orderList;
     
 }
 

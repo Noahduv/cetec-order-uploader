@@ -12,6 +12,8 @@ const path = require('path');
 const ejsMate = require('ejs-mate');
 const flash = require('connect-flash');
 const cetecRoutes = require('./routes/cetecRoutes');
+const catchAsync = require('./utils/catchAsync');
+const expressError = require('./utils/expressError');
 //const cookieParser = require('cookie-parser');
 
 //app.use(cookieParser('secret'));
@@ -30,7 +32,6 @@ app.use(flash());
 app.use((req, res, next) =>{
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
-
     next();
 })
 
@@ -45,8 +46,19 @@ app.get('/settings', (req, res) =>{
     res.render('settingsPage');
 })
 
-app.use((req, res) =>{
-    res.status(404).render('notfound');
+app.all('*', (req, res, next) =>{
+    next(new expressError('Page Not Found', 404));
+})
+
+app.use((err, req, res, next) =>{
+    console.log("Error");
+    const {statusCode = 500} = err;
+    if(!err.message) err.message = 'Something went Wrong!';
+    req.flash('error', err.message);
+
+    if(err.statusCode == 404) res.status(statusCode).render('notfound');
+    
+    res.redirect('back');
 })
 
 app.listen(process.env.PORT || port, () =>{
