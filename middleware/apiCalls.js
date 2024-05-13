@@ -1,6 +1,8 @@
 //const apiCalls = require('./apiCalls');
 const axios = require('axios');
 const expressError = require('../utils/expressError');
+const apiKey = process.env.API_KEY;
+
 
 const config = {headers: { Accept: 'application/json' } };
 
@@ -9,7 +11,7 @@ const config = {headers: { Accept: 'application/json' } };
 /*GET CUSTOMER API CALLS*/
  const getCustomerByEmail = async (email) => {
     try{
-        const res = await axios.get(`https://mistymountain.cetecerp.com/api/customer?preshared_token=c4tBewPhEYNM1Gm&acct_email=${email}`, config);
+        const res = await axios.get(`https://mistymountain.cetecerp.com/api/customer?preshared_token=${apiKey}&acct_email=${email}`, config);
         return res.data;
     }catch(e){
         console.log('Error: ', e);
@@ -19,7 +21,7 @@ const config = {headers: { Accept: 'application/json' } };
 
 const getCustomerById = async(ID) => {
     try{
-        const res = await axios.get(`https://mistymountain.cetecerp.com/api/customer?preshared_token=c4tBewPhEYNM1Gm&id=${ID}`, config);
+        const res = await axios.get(`https://mistymountain.cetecerp.com/api/customer?preshared_token=${apiKey}&id=${ID}`, config);
         return res.data;
     }catch(e){
         console.log('Error: ', e);
@@ -28,7 +30,7 @@ const getCustomerById = async(ID) => {
 
 const getCustomerByKey = async(key) => {
     try{
-        const res = await axios.get(`https://mistymountain.cetecerp.com/api/customer?preshared_token=c4tBewPhEYNM1Gm&external_key=${key}`, config);
+        const res = await axios.get(`https://mistymountain.cetecerp.com/api/customer?preshared_token=${apiKey}&external_key=${key}`, config);
         return res.data;
     }catch(e){
         console.log('Error: ', e);
@@ -37,7 +39,7 @@ const getCustomerByKey = async(key) => {
 /*GET CONTACT API CALLS */
 const getContact = async (email) =>{
     try{
-        const res = await axios.get(`https://mistymountain.cetecerp.com/api/contact?preshared_token=c4tBewPhEYNM1Gm&email=${email}`, config);
+        const res = await axios.get(`https://mistymountain.cetecerp.com/api/contact?preshared_token=${apiKey}&email=${email}`, config);
         return res.data;
     }catch(e){
         console.log('Error: ', e);
@@ -83,12 +85,15 @@ const addCustomerAddress = async(data, ID) =>{
 
 const sendOrder = async(data) => {
     try{
-        const res = await axios.post(`https://mistymountain.cetecerp.com/importjson/quotes?preshared_token=c4tBewPhEYNM1Gm&import_source_name=WEBSERVICE&json=`, data, config);
+        const res = await axios.post(`https://mistymountain.cetecerp.com/importjson/quotes?preshared_token=${apiKey}&import_source_name=WEBSERVICE&json=`, data, config);
         return res;
     }catch(e){
         throw new expressError('Failed to submit order to CETEC', e.status);
     }
 }
+
+
+
 //export {getCustomer, getDadJoke, config};
 
 const apiCalls = {

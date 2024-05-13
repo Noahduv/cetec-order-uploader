@@ -63,7 +63,8 @@ if(orderData){
         return -1;
     }
     
-   // const finalOrderList = await helperFunctions.arraytoString(orderList);
+   //delete temporary file in /uploads
+    helperFunctions.deletedFile(file.filename);
 
     return orderList;
     
@@ -73,3 +74,4 @@ const handleOrders = {
     createOrder: createOrder
 }
 module.exports = handleOrders;
+

@@ -21,7 +21,7 @@ const expressError = require('./utils/expressError');
 app.engine('ejs', ejsMate)
 app.use(express.static(path.join(__dirname, 'public')));
 
-const sessionOptions = { secret: 'secretKey', resave: false, saveUninitialized: false, cookie: {httpOnly: true, expires: Date.now() + 1000 * 60 * 60 * 24 * 7, maxAge: 1000 * 60 * 60 *24 * 7}};
+const sessionOptions = { name: '__CTU', secret: 'secretKey', resave: false, saveUninitialized: false, cookie: {httpOnly: true, expires: Date.now() + 1000 * 60 * 60 * 24 * 7, maxAge: 1000 * 60 * 60 *24 * 7}};
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
 

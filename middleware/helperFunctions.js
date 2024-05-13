@@ -3,6 +3,7 @@ const apiCalls = require('./apiCalls');
 const configData = require('../config/default.json');
 const expressError = require('../utils/expressError');
 const fs = require('fs');
+const apiKey = process.env.API_KEY;
 
 /*ObjectTemplate for creating new order. Contains important fields required for importing orders to cetec*/
 const orderCustomerData = {
@@ -224,7 +225,7 @@ async function getCustomerKey(orderData){
 async function createCustomer(orderData){
     const newData = Object.create(newCustomerData);
 
-    newData.preshared_token = "c4tBewPhEYNM1Gm";
+    newData.preshared_token = apiKey;
     newData.name = orderData["Customer Name"];
     newData.acctemail = orderData["Email"];
     newData.acctphone = orderData["Shipping Address Phone"];
@@ -241,7 +242,7 @@ async function createCustomer(orderData){
     newData.bill_to_address_city = orderData["Billing City"];
     newData.bill_to_address_state = orderData["Billing Province Code"];
     newData.bill_to_address_zip = orderData["Billing ZIP"];
-    newData.bill_to_country_id = 233; //orderData["Billing Country"];
+    newData.bill_to_country_id = await getCountryCode(orderData["Billing Country"]);
 
     //shipping data
     newData.ship_to_name = orderData["Customer Name (Shipping)"];
@@ -250,7 +251,7 @@ async function createCustomer(orderData){
     newData.ship_to_address_city = orderData["Shipping City"];
     newData.ship_to_address_state = orderData["Shipping Province Code"];
     newData.ship_to_address_zip = orderData["Shipping ZIP"];
-    newData.ship_to_country_id = 233;
+    newData.ship_to_country_id = await getCountryCode(orderData["Shipping Country"]);
 
     const res = await apiCalls.createCustomer(newData);
     return res;
@@ -342,6 +343,7 @@ async function processDate(date){
     return date.substring(0, spaceIndex);
 }
 
+/*Determins if an order was placed successfuly*/
 async function evaluateResponse(res){
     if(res.success == 1){
         console.log("request success : ", res.orders[0]);
@@ -353,11 +355,12 @@ async function evaluateResponse(res){
     }
 }
 
+/*attempt to send file to cetec*/
 async function sendOrders(order){
     const res = await apiCalls.sendOrder(order);
     return res.data;
 }
-
+/*Convert Array to a string seperated by commas*/
 async function arraytoString(ordersArr){
     let ordString ="";
     ordersArr.forEach(async(order) =>{
@@ -365,6 +368,21 @@ async function arraytoString(ordersArr){
     });
     return ordString;
 }
+
+/*Deleteds file from supplied path*/
+function deletedFile(name) {
+  
+   let currentDir = __dirname;
+   const directoryPath = currentDir.replace("middleware", "uploads/");
+   try{
+    fs.unlinkSync(directoryPath + name);
+   }catch(e)
+   {
+    console.log("Failed to delete file: ", e);
+   }
+  
+}
+
 const helperFunctions = {
     orderCustomerData: orderCustomerData,
     lineOrderData: lineOrderData,
@@ -381,6 +399,7 @@ const helperFunctions = {
     processDate: processDate,
     evaluateResponse: evaluateResponse,
     sendOrders: sendOrders,
-    arraytoString: arraytoString
+    arraytoString: arraytoString,
+    deletedFile: deletedFile
 }
 module.exports = helperFunctions;
