@@ -5,10 +5,9 @@ const helperFunctions = require('./helperFunctions');
 
 
 /*Main Function for creating a CETEC Order. Returns a JSON object thats is ready to be sent to CETEC*/
-async function createOrder(file)
+async function createOrder(file, apiKey)
 { 
     const fileP = file.path;
-    console.log(file);
     let combinedData = [];
     let newOrder = {};
     let newLine = {};
@@ -34,7 +33,7 @@ if(orderData){
             }
 
             //start processing data for next order
-            const extKey =  await helperFunctions.getCustomerKey(orderData[i]);
+            const extKey =  await helperFunctions.getCustomerKey(orderData[i], apiKey);
             newOrder = await helperFunctions.fillCustomerData(orderData[i], extKey);
             newLine = await helperFunctions.fillLineData(orderData[i], true);
             await helperFunctions.pushToArray(newOrder.lines, newLine);
@@ -49,7 +48,7 @@ if(orderData){
         console.log("array has been filled", combinedData.length);
         for(let i = 0; i < combinedData.length; i++){
            await helperFunctions.incramentKey(combinedData[i].lines);
-            let res = await helperFunctions.sendOrders(combinedData[i]);
+            let res = await helperFunctions.sendOrders(combinedData[i], apiKey);
             orderList.push(await helperFunctions.evaluateResponse(res));
             if(orderList[i] == -1) orderList[i] = (combinedData[i].po);
         }   
@@ -64,7 +63,7 @@ if(orderData){
     }
     
    //delete temporary file in /uploads
-    helperFunctions.deletedFile(file.filename);
+    await helperFunctions.deletedFile(file.filename);
 
     return orderList;
     

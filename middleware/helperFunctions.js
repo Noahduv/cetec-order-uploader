@@ -3,7 +3,7 @@ const apiCalls = require('./apiCalls');
 const configData = require('../config/default.json');
 const expressError = require('../utils/expressError');
 const fs = require('fs');
-const apiKey = process.env.API_KEY;
+
 
 /*ObjectTemplate for creating new order. Contains important fields required for importing orders to cetec*/
 const orderCustomerData = {
@@ -183,28 +183,28 @@ async function fillLineData(orderData, firstLine){
 }
 
 /*exports valid customer external key*/
-async function getCustomerKey(orderData){
+async function getCustomerKey(orderData, apiKey){
 
     let custEmail = orderData["Email"];
     
-    let custData = await apiCalls.getCustomerByEmail(custEmail);
+    let custData = await apiCalls.getCustomerByEmail(custEmail, apiKey);
     if(custData.length >= 1){
        // console.log(custData);
        console.log("Customer found from email.")
         return custData[0].external_key;
     }else{
 
-        custData = await apiCalls.getContact(custEmail); //find contact with mathcing email 
+        custData = await apiCalls.getContact(custEmail, apiKey); //find contact with mathcing email 
 
         if(custData.length >= 1){ //Any Contacts Found?
-            custData = await apiCalls.getCustomerById(custData[0].customer_id); //get customer data from customer ID
+            custData = await apiCalls.getCustomerById(custData[0].customer_id, apiKey); //get customer data from customer ID
             console.log("Found customer via contact.");
             //console.log(custData);
             return custData[0].external_key;
 
         } else{
             console.log("No Customer found need to create customer");
-            custData = await createCustomer(orderData);
+            custData = await createCustomer(orderData, apiKey);
             console.log(custData.status);
 
             if(custData.status == 201 || custData.status == 200){
@@ -222,7 +222,7 @@ async function getCustomerKey(orderData){
 
 }
 
-async function createCustomer(orderData){
+async function createCustomer(orderData, apiKey){
     const newData = Object.create(newCustomerData);
 
     newData.preshared_token = apiKey;
@@ -233,7 +233,7 @@ async function createCustomer(orderData){
     newData.business_type_id = "5";
     orderData["Billing Province Code"] == "NC" ? newData.taxtype = "1" : newData.taxtype = "0";
    
-    const extKey = await generateExternalKey();
+    const extKey = await generateExternalKey(apiKey);
     if(extKey !== 0) newData.external_key = extKey;
 
     newData.bill_to_name = orderData["Customer Name (Billing)"];
@@ -259,11 +259,11 @@ async function createCustomer(orderData){
 }
 
 /**Generates a new External key for a customer and saves to default.json. Returns External Key value as INT*/
-async function generateExternalKey(){
+async function generateExternalKey(apiKey){
     const limiterSize = 30;
     let limiter = 0;
     let newKey = configData.last_external_key + 1;
-    let custData = await apiCalls.getCustomerByKey(newKey);
+    let custData = await apiCalls.getCustomerByKey(newKey, apiKey);
 
     if(custData.length !== 0)
     {
@@ -271,7 +271,7 @@ async function generateExternalKey(){
         while(custData.length !== 0 && limiter < limiterSize) 
         {
             newKey++;
-            custData = await apiCalls.getCustomerByKey(newKey);
+            custData = await apiCalls.getCustomerByKey(newKey, apiKey);
             limiter++;
          }
     }
@@ -356,8 +356,8 @@ async function evaluateResponse(res){
 }
 
 /*attempt to send file to cetec*/
-async function sendOrders(order){
-    const res = await apiCalls.sendOrder(order);
+async function sendOrders(order, apiKey){
+    const res = await apiCalls.sendOrder(order, apiKey);
     return res.data;
 }
 /*Convert Array to a string seperated by commas*/
@@ -370,7 +370,7 @@ async function arraytoString(ordersArr){
 }
 
 /*Deleteds file from supplied path*/
-function deletedFile(name) {
+async function deletedFile(name) {
   
    let currentDir = __dirname;
    const directoryPath = currentDir.replace("middleware", "uploads/");
