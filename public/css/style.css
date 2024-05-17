@@ -72,3 +72,9 @@ ul{
 #settings{
     align-items: center;
 }
+
+p.about {
+    text-align: center;
+    color: #4a4e69;
+    
+}

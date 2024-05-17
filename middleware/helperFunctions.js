@@ -138,7 +138,8 @@ async function fillCustomerData(orderData, extKey){
     newData.terms_description = "Prepay";
 
     /*Find correct country code*/
-    newData.shipto_country = await getCountryCode(orderData["Shipping Country"]);
+    const shipToCode = await getCountryCode(orderData["Shipping Country"]);
+    newData.shipto_country = shipToCode;
     newData.billto_country = await getCountryCode(orderData["Billing Country"]);
 
     /*Determine if tax should be applied*/
@@ -154,7 +155,9 @@ async function fillCustomerData(orderData, extKey){
     newData.internal_vendor_id = "1";
     newData.place_order = "true";
     newData.commission_note = "";
-    newData.ship_via = "ups_ground";
+    
+    shipToCode == 233 ? newData.ship_via = "ups_ground" : newData.ship_via = "fedex_international_economy";
+    
     newData.lines = [];
     return newData;
 }
