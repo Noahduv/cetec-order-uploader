@@ -50,6 +50,10 @@ app.get('/about', (req, res) =>{
     res.render('about');
 })
 
+app.get('/skusorter', (req, res) =>{
+    res.render('skuSorter');
+})
+
 app.all('*', (req, res, next) =>{
     next(new expressError('Page Not Found', 404));
 })
