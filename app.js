@@ -51,7 +51,9 @@ app.get('/about', (req, res) =>{
 })
 
 app.get('/skusorter', (req, res) =>{
-    res.render('skuSorter');
+
+    const customOrders = req.Orders;
+    res.render('skuSorter', {customOrders: customOrders});
 })
 
 app.all('*', (req, res, next) =>{

@@ -1,6 +1,6 @@
 {
   "name": "cetec-order-uploader",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This a web application designed to make order importing into CETEC easier and faster.",
   "main": "app.js",
   "scripts": {

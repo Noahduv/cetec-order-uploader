@@ -7,4 +7,6 @@ const upload = multer({dest: 'uploads/', fileFilter(req, file, cb) { (!file.orig
 
 router.post('/placeOrder', upload.single('shopifyOrders'), catchAsync(cetecController.processOrders));
 
+router.post('placeCustom', catchAsync(cetecController.processCustomOrders));
+
 module.exports = router;

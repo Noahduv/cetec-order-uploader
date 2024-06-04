@@ -385,6 +385,20 @@ async function deletedFile(name) {
    }
   
 }
+/*Checks if order has a custom Harness present. Give Lines array*/
+async function isCustom(order) {
+    let ans;
+    for(let i = 0; i < order.length; i++){
+        if(order.partnum == ""){
+            ans = true;
+            break;
+        }
+        else{
+            ans = false;
+        }
+    }
+    return ans;
+}
 
 const helperFunctions = {
     orderCustomerData: orderCustomerData,
@@ -403,6 +417,7 @@ const helperFunctions = {
     evaluateResponse: evaluateResponse,
     sendOrders: sendOrders,
     arraytoString: arraytoString,
-    deletedFile: deletedFile
+    deletedFile: deletedFile,
+    isCustom: isCustom
 }
 module.exports = helperFunctions;

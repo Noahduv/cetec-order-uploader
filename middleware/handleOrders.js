@@ -13,7 +13,7 @@ async function createOrder(file, apiKey)
     let newLine = {};
     let lastOrder;
     const orderList =[];
-    const failedOrders =[];
+    const customHarnessOrders =[];
     
     //contains json object with all order data
     const orderData = await csvParse.processCSV(fileP);
@@ -48,9 +48,19 @@ if(orderData){
         console.log("array has been filled", combinedData.length);
         for(let i = 0; i < combinedData.length; i++){
            await helperFunctions.incramentKey(combinedData[i].lines);
+
+           //CHeck to see if any Custom Harnesses are present
+           let custom = await helperFunctions.isCustom(combinedData[i].lines);
+           if(custom) {
+            await helperFunctions.pushToArray(combinedData[i], customHarnessOrders);
+            orderList.push(-1);
+           }
+           else{
+            //send orders to cetec. If no Custom Present.
             let res = await helperFunctions.sendOrders(combinedData[i], apiKey);
             orderList.push(await helperFunctions.evaluateResponse(res));
-            if(orderList[i] == -1) orderList[i] = (combinedData[i].po);
+           }
+           if(orderList[i] == -1) orderList[i] = (combinedData[i].po);
         }   
     }
     else{

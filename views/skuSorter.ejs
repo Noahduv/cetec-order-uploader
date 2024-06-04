@@ -5,4 +5,20 @@
     <h1>Custom Harness SKU Sorter</h1>
     </div>
     </div>
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <%customOrders.forEach(order => {   if(order.po) { %>
+            <a class="nav-item nav-link" id="" data-toggle="tab" href="" role="tab" aria-controls="nav-profile" aria-selected="false"> Order <%=order.po %></a>
+           <% } else { %>
+            <a class="nav-item nav-link" id="nav-new-tab" data-toggle="tab" href="#nav-new" role="tab" aria-controls="nav-profile" aria-selected="false">New Custom</a>
+           <%}}); %>
+          
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...</div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+      </div>
 </div>

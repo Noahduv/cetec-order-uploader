@@ -24,10 +24,12 @@ module.exports.processOrders = async (req, res) => {
                    if(failedUploads.length !== 0) req.flash('error', `Failed to place orders: ${failedUploadsString}`);
                    
                }
-           
-   
-
+    
   res.redirect('/');
    
 }
 
+module.exports.processCustomOrders = async (req, res) => {
+
+    res.redirect('/');
+}
