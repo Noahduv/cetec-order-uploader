@@ -5,7 +5,6 @@ if(process.env.NODE_ENV !== "production"){
 
 const express = require("express");
 const app = express();
-const port = 3000;
 const morgan = require('morgan');
 const session = require('express-session');
 const path = require('path');
@@ -14,6 +13,7 @@ const flash = require('connect-flash');
 const cetecRoutes = require('./routes/cetecRoutes');
 const catchAsync = require('./utils/catchAsync');
 const expressError = require('./utils/expressError');
+const http = require('http');
 //const cookieParser = require('cookie-parser');
 
 //app.use(cookieParser('secret'));
@@ -69,6 +69,12 @@ app.use((err, req, res, next) =>{
     res.redirect('back');
 })
 
-app.listen(process.env.PORT || port, () =>{
-    console.log("Listening on port 3000")
-})
+//Server within network only
+http.createServer(app).listen(process.env.PORT, process.env.HOSTNAME, () => {
+    console.log(`Server Listening at http://${process.env.HOSTNAME}:${process.env.PORT}`)
+});
+
+//Localhost server only
+/*app.listen(process.env.PORT, () => {
+    console.log(`Listening on Port http://localhost:${process.env.PORT}`);
+})*/

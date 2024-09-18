@@ -1,6 +1,7 @@
 
 <% layout('layout/boilerplate')%>
 
+<!--
     <div class="row align-items-center">
         <div class="col-sm-4"> 
             <div class="card" id="titleCard">
@@ -10,9 +11,10 @@
             </div>
           </div>
         </div>
+        -->
        
       
-        <div class="col-sm-8">
+        <div class="col-sm-8 offset-2">
             <div class="card" id="uploadCard">
             <h2>Upload Shopify Orders Here</h2> 
             <form action="/cetec/placeOrder" method="POST" enctype="multipart/form-data" novalidate class="validated-form">
@@ -47,7 +49,7 @@
         </div>
        </div>
        <div class="row">
-        <div class="col-8 offset-4">
+        <div class="col-8 offset-2">
             <div class="mb-3">
                 <h3>Get A Joke</h3>
                 <button id="jokeButton">Click Me!</button>

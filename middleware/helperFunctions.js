@@ -193,7 +193,8 @@ async function getCustomerKey(orderData, apiKey){
     let custData = await apiCalls.getCustomerByEmail(custEmail, apiKey);
     if(custData.length >= 1){
        // console.log(custData);
-       console.log("Customer found from email.")
+       console.log("Customer found from email.");
+       
         return custData[0].external_key;
     }else{
 
