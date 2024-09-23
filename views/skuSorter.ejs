@@ -9,27 +9,27 @@
 
 <div class="col-sm-6 offset-3">
     <div class="card" id="uploadCard">
-<form id="SKUInput" onsubmit="return false">
+<form id="SKUInput" action="/skuSorter" method="POST" >
     <div class="mb-3 px-3">
         <label for="SKU" class="form-label skuLabel" id="">Enter Custom Harness SKU</label>
         <div class="input-group flex-nowrap">
           <span class="input-group-text" id="addon-wrapping">SKU</span>
-          <input type="text" class="form-control" aria-label="Text Field for SKU Sorter" aria-describedby="addon-wrapping" name="SKU" id="SKU" required>
+          <input type="text" class="form-control" aria-label="Text Field for SKU Sorter" aria-describedby="addon-wrapping" name="sku" id="SKU" required>
         </div>
       </div>
       <button id="SKUSub">Split SKU</button>
 </form>
 
-<B class="skuLabel">New SKUs</B>
-<p>Belt Exterior Color: <strong id="BEXT"></strong></p>
-<p>Belt Interior Color: <strong id="BINT"></strong></p>
-<p>Belt Plate Color: <strong id="PLT"></strong></p>
-<p>Leg Exterior Color: <strong id="LEXT"></strong></p>
-<p>Leg Interior Color: <strong id="LINT"></strong></p>
-<p>Extra 1: <strong id="EX1"></strong></p>
-<p>Extra 2: <strong id="EX2"></strong></p>
-
+<% if(splitSku) {%>
+    <h2 class="skuLabel">New SKUs</h2>
+    <p>Belt Exterior Color: <strong><%=splitSku.beltE%></strong></p>
+    <p>Belt Interior Color: <strong><%=splitSku.beltI%></strong></p>
+    <p>Belt Plate Color: <strong><%=splitSku.beltP%></strong></p>
+    <p>Leg Exterior Color: <strong><%=splitSku.legE%></strong></p>
+    <p>Leg Interior Color: <strong><%=splitSku.legI%></strong></p>
+    <p>Extra 1: <strong><%=splitSku.ext1%></strong></p>
+    <p>Extra 2: <strong><%=splitSku.ext2%></strong></p>
+<% } %>
 </div>
 </div>
 
-<script src="/javascripts/skuSorter.js"></script>

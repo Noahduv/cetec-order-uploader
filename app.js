@@ -11,6 +11,7 @@ const path = require('path');
 const ejsMate = require('ejs-mate');
 const flash = require('connect-flash');
 const cetecRoutes = require('./routes/cetecRoutes');
+const sorterRoutes = require('./routes/skuSorter');
 const catchAsync = require('./utils/catchAsync');
 const expressError = require('./utils/expressError');
 const http = require('http');
@@ -20,6 +21,8 @@ const http = require('http');
 
 app.engine('ejs', ejsMate)
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.urlencoded({extended:true}));
 
 const sessionOptions = { name: '__CTU', secret: 'secretKey', resave: false, saveUninitialized: false, cookie: {httpOnly: true, expires: Date.now() + 1000 * 60 * 60 * 24 * 7, maxAge: 1000 * 60 * 60 *24 * 7}};
 app.set('view engine', 'ejs');
@@ -36,6 +39,7 @@ app.use((req, res, next) =>{
 })
 
 app.use('/cetec', cetecRoutes);
+app.use('/skuSorter', sorterRoutes);
 
 app.get('/', (req, res) =>{
     req.flash('success', 'Welcome home!');
@@ -50,9 +54,9 @@ app.get('/about', (req, res) =>{
     res.render('about');
 })
 
-app.get('/skusorter', (req, res) =>{
+/*app.get('/skusorter', (req, res) =>{
     res.render('skuSorter');
-})
+})*/
 
 app.all('*', (req, res, next) =>{
     next(new expressError('Page Not Found', 404));
